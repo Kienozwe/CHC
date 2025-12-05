@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welcome - Community Health Check</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body class="welcome-body">
+
+  <!-- Dark/Light Mode Button -->
+  <button id="themeToggle" class="theme-btn">🌙 Dark Mode</button>
+
+  <!-- Floating shapes -->
+  <div class="shape"></div>
+  <div class="shape"></div>
+  <div class="shape"></div>
+
+  <!-- Blurred Header -->
+  <header>
+    <div class="logo">Community Health Check</div>
+    <nav></nav>
+  </header>
+
+  <!-- Heart Glow -->
+  <div class="heart-glow"></div>
+
+  <!-- Welcome Main Section -->
+  <div class="welcome-container">
+    <h1 class="animated-title">Welcome to Community Health Check</h1>
+    <p>Your wellness map, health records, and weather alerts — all in one system.</p>
+    <a href="login.html" class="start-btn">Get Started</a>
+  </div>
+
+  <!-- Waves -->
+  <div class="waves">
+    <div class="wave"></div>
+    <div class="wave"></div>
+  </div>
+
+  <!-- Features Section -->
+  <section class="features-section">
+    <h2>Features You Can Explore</h2>
+
+    <div class="features-container">
+
+      <div class="feature-card">
+        <i class="fas fa-map-marked-alt"></i>
+        <h3>Wellness Map</h3>
+        <p>Find hospitals, clinics, and community health centers around you.</p>
+      </div>
+
+      <div class="feature-card">
+        <i class="fas fa-cloud-sun"></i>
+        <h3>Weather Alerts</h3>
+        <p>Stay updated with real-time weather and safety notifications.</p>
+      </div>
+
+      <div class="feature-card">
+        <i class="fas fa-chart-bar"></i>
+        <h3>Health Statistics</h3>
+        <p>Visualize health trends in your community using Chart.js.</p>
+      </div>
+
+      <div class="feature-card">
+        <i class="fas fa-heartbeat"></i>
+        <h3>Health Checker</h3>
+        <p>Submit symptoms and track your personal health condition.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <div class="footer-text">
+    © 2025 Community Health Check — SDG 3: Good Health and Well-Being
+  </div>
+  
+<script>
+  // Apply saved theme on page load
+  if (localStorage.getItem("theme") === "dark") {
+      document.body.classList.add("dark-mode");
+  }
+
+  // Theme toggle button
+  const themeToggle = document.getElementById("themeToggle");
+  if (themeToggle) {
+      themeToggle.addEventListener("click", () => {
+          document.body.classList.toggle("dark-mode");
+
+          // Save the theme
+          if (document.body.classList.contains("dark-mode")) {
+              localStorage.setItem("theme", "dark");
+              themeToggle.innerHTML = "☀️ Light Mode";
+          } else {
+              localStorage.setItem("theme", "light");
+              themeToggle.innerHTML = "🌙 Dark Mode";
+          }
+      });
+  }
+</script>
+
+
+</body>
+
+</html>

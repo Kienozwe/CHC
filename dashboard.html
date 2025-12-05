@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dashboard - Community Health Check</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand shadow-sm nav-bg">
+    <div class="container">
+      <a class="navbar-brand" href="#">Health Check</a>
+
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="map.html">Wellness Map</a></li>
+          <li class="nav-item"><a class="nav-link" href="checker.html">Health Checker</a></li>
+          <li class="nav-item"><a class="nav-link" href="records.html">Records</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+        </ul>
+
+        <!-- ⭐ Dark Mode Toggle -->
+        <button id="themeToggle" class="btn btn-outline-dark me-2">🌙 Dark Mode</button>
+
+        <a class="btn btn-outline-secondary" href="logout.html">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container my-4">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="card p-3 h-100 card-bg">
+          <h5>Weather</h5>
+          <div class="mb-2">
+            <label class="form-label">City</label>
+            <input id="cityInput" class="form-control">
+          </div>
+          <button id="refreshWeather" class="btn btn-primary mb-2">Refresh</button>
+          <div id="weatherBox">
+            <p><strong id="w-temp">--</strong></p>
+            <p id="w-cond">--</p>
+            <p id="w-hum">--</p>
+            <p id="w-alert">No alerts</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card p-3 h-100 card-bg">
+          <h5>Health Summary</h5>
+          <canvas id="healthChart" style="max-height:250px"></canvas>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="card p-3 h-100 card-bg">
+          <h5>Map Snapshot</h5>
+          <div id="mapSnapshot" style="height:250px"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-3 mt-3 card-bg">
+      <h5>Recent Health Entries</h5>
+      <div id="recentList" class="row g-2 mt-2"></div>
+    </div>
+  </main>
+
+  <script>
+  // Apply saved theme on page load
+  if (localStorage.getItem("theme") === "dark") {
+      document.body.classList.add("dark-mode");
+  }
+
+  // Theme toggle button
+  const themeToggle = document.getElementById("themeToggle");
+  if (themeToggle) {
+      themeToggle.addEventListener("click", () => {
+          document.body.classList.toggle("dark-mode");
+
+          // Save the theme
+          if (document.body.classList.contains("dark-mode")) {
+              localStorage.setItem("theme", "dark");
+              themeToggle.innerHTML = "☀️ Light Mode";
+          } else {
+              localStorage.setItem("theme", "light");
+              themeToggle.innerHTML = "🌙 Dark Mode";
+          }
+      });
+  }
+</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

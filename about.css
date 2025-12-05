@@ -1,0 +1,400 @@
+/* ---- GENERAL ---- */
+body {
+  background: #f8f9fa;
+  transition: 0.3s ease-in-out;
+}
+
+.dark-mode {
+  background: #1e1e1e !important;
+  color: white;
+}
+
+/* ---- NAVBAR ---- */
+.navbar {
+  z-index: 10;
+}
+
+.dark-mode .navbar {
+  background: #2a2a2a !important;
+}
+
+.dark-mode .nav-link,
+.dark-mode .navbar-brand {
+  color: white !important;
+}
+
+.dark-mode .btn-outline-secondary {
+  color: white !important;
+  border-color: white;
+}
+
+/* ---- TEAM SECTION ---- */
+.about-section {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.about-title {
+  font-size: 32px;
+  margin-bottom: 30px;
+}
+
+/* ⭐ FIXED ROW LAYOUT ⭐ */
+.team-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 20px;
+}
+
+/* ---- TEAM CARD ---- */
+.team-member {
+  width: 260px;
+  background: white;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  flex-shrink: 0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;  /* ⭐ Animation */
+}
+
+/* ⭐ ANIMATION ON HOVER ⭐ */
+.team-member:hover {
+  transform: scale(1.07) translateY(-8px);     /* Lift + Zoom */
+  box-shadow: 0 8px 18px rgba(0,0,0,0.25);      /* Stronger shadow */
+}
+
+/* ---- DARK MODE CARD ---- */
+.dark-mode .team-member {
+  background: #2d2d2d;
+  color: white;
+}
+
+.dark-mode .team-member:hover {
+  box-shadow: 0 8px 20px rgba(255,255,255,0.1);
+  transform: scale(1.07) translateY(-8px);
+}
+
+/* ---- MEMBER PHOTO ---- */
+.member-photo {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  transition: transform 0.3s ease;
+}
+
+/* ⭐ PHOTO ZOOM ON HOVER ⭐ */
+.team-member:hover .member-photo {
+  transform: scale(1.05);
+}
+/* --- TEAM CONTAINER SPACING --- */
+.team-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 35px; /* more space between cards */
+    padding: 20px 0;
+}
+
+/* --- TEAM CARD STYLE --- */
+.team-card {
+    width: 260px;
+    background: #2a2a2a;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    color: #fff;
+    transition: transform 0.3s ease;
+}
+
+/* Lift card slightly on hover */
+.team-card:hover {
+    transform: translateY(-5px);
+}
+
+/* --- IMAGE WRAPPER FOR ZOOM + COLOR TINT --- */
+.team-card .img-box {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+/* Image itself */
+.team-card .img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+/* Color overlay */
+.team-card .img-box::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(19, 132, 212, 0.25); /* blue tint */
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+/* Hover effect: zoom + color */
+.team-card:hover .img-box img {
+    transform: scale(1.12);
+}
+
+.team-card:hover .img-box::after {
+    opacity: 1;
+}
+/* --- TEAM CONTAINER (More Space Between Cards) --- */
+.team-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 55px;       /* ⭐ More spacing */
+    padding: 40px 0;
+}
+
+/* --- TEAM CARD WITH COLORED EDGE --- */
+.team-card {
+    width: 270px;
+    background: #2a2a2a;
+    padding: 22px;
+    border-radius: 18px;
+    text-align: center;
+    color: #fff;
+    transition: 0.35s ease;
+
+    /* ⭐ Colored glow edges */
+    border: 2px solid rgba(0, 150, 255, 0.4);
+    box-shadow: 0 0 15px rgba(0, 150, 255, 0.25);
+}
+
+/* Hover effect: glow brighter + lift */
+.team-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 0 25px rgba(0, 150, 255, 0.7);
+    border-color: rgba(0, 180, 255, 0.9);
+}
+
+/* --- IMAGE ZOOM + COLOR TINT --- */
+.team-card .img-box {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+.team-card .img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.team-card .img-box::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 150, 255, 0.25);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.team-card:hover .img-box img {
+    transform: scale(1.12);
+}
+
+.team-card:hover .img-box::after {
+    opacity: 1;
+}
+/* --- TEAM CONTAINER (Much Larger Spacing) --- */
+.team-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 85px;             /* ⭐ MUCH more spacing between cards */
+    padding: 50px 0;
+}
+
+/* --- TEAM CARD WITH STRONG BLUE GLOW --- */
+.team-card {
+    width: 270px;
+    background: #2a2a2a;
+    padding: 22px;
+    border-radius: 18px;
+    text-align: center;
+    color: #fff;
+    transition: 0.35s ease;
+
+    /* ⭐ Stronger blue border + glow */
+    border: 3px solid rgba(0, 120, 255, 0.9);
+    box-shadow: 
+        0 0 15px rgba(0, 140, 255, 0.7),
+        0 0 30px rgba(0, 140, 255, 0.4);
+}
+
+/* Hover effect: brighter + lift */
+.team-card:hover {
+    transform: translateY(-10px);
+    box-shadow:
+        0 0 25px rgba(0, 160, 255, 1),
+        0 0 45px rgba(0, 160, 255, 0.8);
+    border-color: rgba(0, 180, 255, 1);
+}
+
+/* --- IMAGE ZOOM + BLUE TINT --- */
+.team-card .img-box {
+    position: relative;
+    width: 100%;
+    height: 300px;
+    overflow: hidden;
+    border-radius: 12px;
+    margin-bottom: 15px;
+}
+
+.team-card .img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+/* Blue overlay tint */
+.team-card .img-box::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 140, 255, 0.25);
+    opacity: 0;
+    transition: 0.4s ease;
+}
+
+.team-card:hover .img-box img {
+    transform: scale(1.14);
+}
+
+.team-card:hover .img-box::after {
+    opacity: 1;
+}
+/* --- CIRCLE PICTURE BOX --- */
+.team-card .img-box {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 18px auto;
+    overflow: hidden;
+    border-radius: 50%;       /* ⭐ Make image a perfect circle */
+    border: 4px solid #0098ff;
+    box-shadow: 0 0 15px rgba(0,150,255,0.8);
+    transition: 0.3s ease;
+}
+
+.team-card .img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.4s ease;
+}
+
+/* Hover zoom + blue tint */
+.team-card .img-box::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: rgba(0,150,255,0.25);
+    opacity: 0;
+    transition: 0.4s ease;
+}
+
+.team-card:hover .img-box img {
+    transform: scale(1.15);
+}
+
+.team-card:hover .img-box::after {
+    opacity: 1;
+}
+/* --- SMOOTH ROUNDED PHOTO BOX --- */
+.team-card .img-box {
+    position: relative;
+    width: 100%;
+    height: 260px;
+    overflow: hidden;
+    border-radius: 35px;      /* ⭐ Smooth rounded shape */
+    border: 4px solid #0098ff;
+    box-shadow: 0 0 15px rgba(0,150,255,0.8);
+    transition: 0.3s ease;
+}
+
+.team-card .img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.4s ease;
+}
+
+.team-card .img-box::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,150,255,0.25);
+    border-radius: 35px;
+    opacity: 0;
+    transition: 0.4s;
+}
+
+.team-card:hover .img-box img {
+    transform: scale(1.14);
+}
+
+.team-card:hover .img-box::after {
+    opacity: 1;
+}
+/* ---------------------------------------------------
+   GLOBAL BACKGROUND (Visible in both light & dark)
+----------------------------------------------------*/
+body {
+    background-image: url("https://t4.ftcdn.net/jpg/03/46/97/65/360_F_346976561_fpYlR0EhFRJrkLnfS1Ma033lQypM5cQb.jpg");  /* <-- PUT YOUR IMAGE HERE */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;  /* ⭐ stays still when scrolling */
+    transition: background 0.3s ease-in-out;
+}
+
+/* ---------------------------------------------------
+   DARK MODE — KEEP THE BACKGROUND VISIBLE
+----------------------------------------------------*/
+.dark-mode {
+    background-image: url("https://t4.ftcdn.net/jpg/03/46/97/65/360_F_346976561_fpYlR0EhFRJrkLnfS1Ma033lQypM5cQb.jpg"); /* same image so it shows */
+    color: white;
+}
+
+/* Optional: dark overlay to make white text readable */
+.dark-mode::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.45); /* darkness overlay */
+    pointer-events: none;
+    z-index: -1;
+}

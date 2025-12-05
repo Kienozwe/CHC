@@ -1,0 +1,149 @@
+/* ---------------------------------
+      GLOBAL DARK MODE
+-----------------------------------*/
+body.dark-mode {
+    background: #121212;
+    color: #e5e5e5;
+    transition: 0.3s ease;
+}
+
+/* ---------------------------------
+      NAVBAR (ALWAYS VISIBLE)
+-----------------------------------*/
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand,
+.nav-link {
+    color: #000 !important;
+    font-weight: 500;
+}
+
+.dark-mode .navbar {
+    background: rgba(20, 20, 20, 0.95) !important;
+}
+
+.dark-mode .navbar-brand,
+.dark-mode .nav-link {
+    color: #fff !important;
+}
+
+/* Fix body content hidden behind navbar */
+body {
+    padding-top: 80px;
+}
+
+/* ---------------------------------
+      CARD STYLE
+-----------------------------------*/
+.card {
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    background: #fff;
+}
+
+.dark-mode .card {
+    background: #1e1e1e;
+    border-color: #444;
+}
+
+/* ---------------------------------
+      TABLE STYLE
+-----------------------------------*/
+.table {
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.table thead {
+    background: #f8f9fa;
+}
+
+.dark-mode .table thead {
+    background: #333;
+    color: #fff;
+}
+
+.table tbody tr {
+    background: #fff;
+}
+
+.dark-mode .table tbody tr {
+    background: #2a2a2a;
+    color: #fff;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) {
+    background: #f0f0f0;
+}
+
+.dark-mode .table-striped > tbody > tr:nth-of-type(odd) {
+    background: #242424;
+}
+
+/* ---------------------------------
+      MODAL STYLE
+-----------------------------------*/
+.modal-content {
+    background: #fff;
+    color: #000;
+}
+
+.dark-mode .modal-content {
+    background: #1e1e1e;
+    color: #fff;
+}
+
+.dark-mode .modal-header,
+.dark-mode .modal-footer {
+    border-color: #444;
+}
+
+/* ---------------------------------
+      BUTTONS
+-----------------------------------*/
+.btn-outline-secondary {
+    font-weight: 500;
+}
+
+.dark-mode .btn-outline-secondary {
+    border-color: #ccc;
+    color: #fff;
+}
+/* ---------------------------------------------------
+   GLOBAL BACKGROUND (Visible in both light & dark)
+----------------------------------------------------*/
+body {
+    background-image: url("https://t4.ftcdn.net/jpg/03/46/97/65/360_F_346976561_fpYlR0EhFRJrkLnfS1Ma033lQypM5cQb.jpg");  /* <-- PUT YOUR IMAGE HERE */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;  /* ⭐ stays still when scrolling */
+    transition: background 0.3s ease-in-out;
+}
+
+/* ---------------------------------------------------
+   DARK MODE — KEEP THE BACKGROUND VISIBLE
+----------------------------------------------------*/
+.dark-mode {
+    background-image: url("https://t4.ftcdn.net/jpg/03/46/97/65/360_F_346976561_fpYlR0EhFRJrkLnfS1Ma033lQypM5cQb.jpg"); /* same image so it shows */
+    color: white;
+}
+
+/* Optional: dark overlay to make white text readable */
+.dark-mode::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.45); /* darkness overlay */
+    pointer-events: none;
+    z-index: -1;
+}

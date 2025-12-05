@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Wellness Map - Community Health Check</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="map.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand bg-white shadow-sm">
+    <div class="container">
+      <a class="navbar-brand" href="dashboard.html">Health Check</a>
+      <div class="collapse navbar-collapse">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link" href="dashboard.html">Dashboard</a></li>
+          <li class="nav-item"><a class="nav-link" href="map.html">Wellness Map</a></li>
+          <li class="nav-item"><a class="nav-link" href="checker.html">Health Checker</a></li>
+          <li class="nav-item"><a class="nav-link" href="records.html">Records</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+        </ul>
+        <a class="btn btn-outline-secondary" href="logout.html">Logout</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container my-4">
+    
+      <h5>Filters</h5>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="showHospitals" checked>
+        <label class="form-check-label" for="showHospitals">Hospitals</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="showClinics" checked>
+        <label class="form-check-label" for="showClinics">Clinics</label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="checkbox" id="showPosts" checked>
+        <label class="form-check-label" for="showPosts">Community Posts</label>
+      </div>
+
+      <div id="fullMap" style="height:600px;" class="mt-3"></div>
+    </div>
+  </main>
+
+  <script>
+  // Apply saved theme on page load
+  if (localStorage.getItem("theme") === "dark") {
+      document.body.classList.add("dark-mode");
+  }
+
+  // Theme toggle button
+  const themeToggle = document.getElementById("themeToggle");
+  if (themeToggle) {
+      themeToggle.addEventListener("click", () => {
+          document.body.classList.toggle("dark-mode");
+
+          // Save the theme
+          if (document.body.classList.contains("dark-mode")) {
+              localStorage.setItem("theme", "dark");
+              themeToggle.innerHTML = "☀️ Light Mode";
+          } else {
+              localStorage.setItem("theme", "light");
+              themeToggle.innerHTML = "🌙 Dark Mode";
+          }
+      });
+  }
+</script>
+
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

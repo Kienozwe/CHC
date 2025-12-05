@@ -1,0 +1,151 @@
+                                    /* ---------------------------------
+      GLOBAL DARK MODE
+-----------------------------------*/
+body.dark-mode {
+    background: #121212;
+    color: #e5e5e5;
+    transition: 0.3s ease;
+}
+
+/* ---------------------------------
+      NAVBAR (VISIBLE IN DARK)
+-----------------------------------*/
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 9999;
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.navbar-brand,
+.nav-link {
+    color: #000 !important;
+    font-weight: 500;
+}
+
+.dark-mode .navbar {
+    background: rgba(20, 20, 20, 0.95) !important;
+}
+
+.dark-mode .navbar-brand,
+.dark-mode .nav-link {
+    color: #fff !important;
+}
+
+/* ---------------------------------
+      MAIN CONTENT SPACING
+-----------------------------------*/
+main {
+    margin-top: 90px;
+}
+
+/* ---------------------------------
+      HEADERS / TITLES
+-----------------------------------*/
+h5, h6, label, p, .form-check-label {
+    color: #000;
+}
+
+.dark-mode h5,
+.dark-mode h6,
+.dark-mode label,
+.dark-mode p,
+.dark-mode .form-check-label {
+    color: #fff;
+}
+
+/* ---------------------------------
+      FORM FIELDS
+-----------------------------------*/
+.form-control,
+textarea,
+select {
+    background: #fff;
+    color: #000;
+    border: 1px solid #ccc;
+}
+
+.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 4px rgba(13, 110, 253, 0.4);
+}
+
+.dark-mode .form-control,
+.dark-mode textarea,
+.dark-mode select {
+    background: #1e1e1e;
+    color: #fff;
+    border: 1px solid #555;
+}
+
+.dark-mode .form-control:focus {
+    border-color: #66aaff;
+    box-shadow: 0 0 4px rgba(120, 180, 255, 0.4);
+}
+
+/* ---------------------------------
+      MAP STYLING
+-----------------------------------*/
+#checkerMap {
+    border-radius: 12px;
+    border: 2px solid #ddd;
+}
+
+.dark-mode #checkerMap {
+    border-color: #444;
+}
+
+/* ---------------------------------
+      BUTTONS
+-----------------------------------*/
+.btn-primary {
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.dark-mode .btn-primary {
+    background: #1565c0;
+    border-color: #1565c0;
+}
+
+.btn-outline-secondary {
+    font-weight: 500;
+}
+
+.dark-mode .btn-outline-secondary {
+    color: #fff;
+    border-color: #aaa;
+}
+/* ---------------------------------------------------
+   GLOBAL BACKGROUND (Visible in both light & dark)
+----------------------------------------------------*/
+body {
+    background-image: url("https://t4.ftcdn.net/jpg/03/46/97/65/360_F_346976561_fpYlR0EhFRJrkLnfS1Ma033lQypM5cQb.jpg");  /* <-- PUT YOUR IMAGE HERE */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;  /* ⭐ stays still when scrolling */
+    transition: background 0.3s ease-in-out;
+}
+
+/* ---------------------------------------------------
+   DARK MODE — KEEP THE BACKGROUND VISIBLE
+----------------------------------------------------*/
+.dark-mode {
+    background-image: url("https://t4.ftcdn.net/jpg/03/46/97/65/360_F_346976561_fpYlR0EhFRJrkLnfS1Ma033lQypM5cQb.jpg"); /* same image so it shows */
+    color: white;
+}
+
+/* Optional: dark overlay to make white text readable */
+.dark-mode::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.45); /* darkness overlay */
+    pointer-events: none;
+    z-index: -1;
+}

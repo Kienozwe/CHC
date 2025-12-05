@@ -1,0 +1,174 @@
+/* -----------------------------------------------------
+   GLOBAL RESET + TRANSITIONS
+----------------------------------------------------- */
+* {
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    background: #f4f6fb;
+    transition: background 0.4s ease, color 0.4s ease;
+}
+
+body.dark-mode {
+    background: #0f0f0f;
+    color: #e4e4e4;
+}
+
+/* -----------------------------------------------------
+   NAVBAR STYLES
+----------------------------------------------------- */
+.dashboard-nav {
+    backdrop-filter: blur(12px);
+    background: rgba(255, 255, 255, 0.7);
+    transition: 0.3s;
+}
+
+body.dark-mode .dashboard-nav {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.dashboard-nav .nav-link {
+    color: #333;
+    margin-right: 10px;
+    font-weight: 500;
+}
+
+.dashboard-nav .nav-link:hover,
+.dashboard-nav .nav-link.active {
+    color: #4a79ff;
+}
+
+body.dark-mode .nav-link {
+    color: #ddd !important;
+}
+
+body.dark-mode .nav-link.active {
+    color: #7aa8ff !important;
+}
+
+/* -----------------------------------------------------
+   CARDS (GLASSMORPHIC)
+----------------------------------------------------- */
+.card-bg {
+    background: rgba(255, 255, 255, 0.8);
+    border: none;
+    border-radius: 18px;
+    box-shadow: 0 4px 25px rgba(0,0,0,0.08);
+    backdrop-filter: blur(12px);
+    transition: 0.3s;
+}
+
+.card-bg:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* Dark mode card */
+body.dark-mode .card-bg {
+    background: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 20px rgba(255,255,255,0.07);
+}
+
+/* Section titles */
+.card-bg h5 {
+    font-weight: 600;
+}
+
+/* -----------------------------------------------------
+   WEATHER BOX STYLES
+----------------------------------------------------- */
+#weatherBox p {
+    margin: 0;
+}
+
+/* -----------------------------------------------------
+   MAP SNAPSHOT
+----------------------------------------------------- */
+#mapSnapshot {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* -----------------------------------------------------
+   RECENT ITEMS
+----------------------------------------------------- */
+#recentList .item {
+    padding: 12px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 12px;
+}
+
+body.dark-mode #recentList .item {
+    background: rgba(255,255,255,0.05);
+}
+
+/* -----------------------------------------------------
+   DARK MODE BUTTON
+----------------------------------------------------- */
+#themeToggle {
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+body.dark-mode #themeToggle {
+    background: #222;
+    color: #fff;
+}
+
+/* -----------------------------------------------------
+   SMOOTH FADE ANIMATION
+----------------------------------------------------- */
+.card-bg, .dashboard-nav {
+    animation: fadeIn 0.9s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+header, nav {
+    background: rgba(0, 0, 0, 0.6); /* semi-transparent so the bg shows */
+    color: #fff;
+    padding: 15px;
+    position: relative;
+    z-index: 10;
+}
+nav a, header a {
+    color: #fff !important;
+}
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+}
+/* ---------------------------------------------------
+   GLOBAL BACKGROUND (Visible in both light & dark)
+----------------------------------------------------*/
+body {
+    background-image: url("https://t4.ftcdn.net/jpg/03/46/97/65/360_F_346976561_fpYlR0EhFRJrkLnfS1Ma033lQypM5cQb.jpg");  /* <-- PUT YOUR IMAGE HERE */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;  /* ⭐ stays still when scrolling */
+    transition: background 0.3s ease-in-out;
+}
+
+/* ---------------------------------------------------
+   DARK MODE — KEEP THE BACKGROUND VISIBLE
+----------------------------------------------------*/
+.dark-mode {
+    background-image: url("https://t4.ftcdn.net/jpg/03/46/97/65/360_F_346976561_fpYlR0EhFRJrkLnfS1Ma033lQypM5cQb.jpg"); /* same image so it shows */
+    color: white;
+}
+
+/* Optional: dark overlay to make white text readable */
+.dark-mode::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.45); /* darkness overlay */
+    pointer-events: none;
+    z-index: -1;
+}

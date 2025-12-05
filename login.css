@@ -1,0 +1,159 @@
+/* --------------------------------------------
+   GLOBAL RESET
+---------------------------------------------*/
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+/* --------------------------------------------
+   BACKGROUND + FLOATING BLUR SHAPES
+---------------------------------------------*/
+body {
+    overflow: hidden;
+    background: #f6f9ff;
+    transition: background 0.4s ease, color 0.4s ease;
+    position: relative;
+}
+
+/* Add blurred animated shapes */
+.shape {
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    background: #7aa8ff;
+    filter: blur(140px);
+    opacity: 0.55;
+    z-index: -1;
+    animation: float 10s ease-in-out infinite alternate;
+}
+
+.shape:nth-child(1) {
+    top: -60px;
+    left: -40px;
+}
+.shape:nth-child(2) {
+    bottom: -40px;
+    right: -30px;
+    background: #ff8a8a;
+}
+.shape:nth-child(3) {
+    top: 40%;
+    left: 55%;
+    background: #8affc1;
+}
+
+@keyframes float {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(40px); }
+}
+
+/* --------------------------------------------
+   DARK MODE BACKGROUND
+---------------------------------------------*/
+body.dark-mode {
+    background: #0e0e0e;
+    color: #eee;
+}
+
+body.dark-mode .shape {
+    opacity: 0.35;
+    filter: blur(180px);
+}
+
+/* --------------------------------------------
+   LOGIN CARD STYLING
+---------------------------------------------*/
+.login-card {
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    background: rgba(255,255,255,0.85);
+    transition: background 0.4s ease, color 0.4s ease, box-shadow 0.4s;
+}
+
+.login-card h3 {
+    font-weight: 600;
+}
+
+/* Dark mode card */
+body.dark-mode .login-card {
+    background: rgba(255,255,255,0.05);
+    color: white;
+    box-shadow: 0 0 25px rgba(255,255,255,0.06);
+}
+
+/* Input fields */
+.form-control {
+    border-radius: 10px;
+}
+
+body.dark-mode .form-control {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+body.dark-mode .form-label {
+    color: #ececec;
+}
+
+/* --------------------------------------------
+   LOGIN BUTTON
+---------------------------------------------*/
+.btn-primary {
+    border-radius: 12px;
+}
+
+/* Dark mode button */
+body.dark-mode .btn-primary {
+    background: #ff6699;
+    border: none;
+}
+
+body.dark-mode .btn-primary:hover {
+    background: #ff3c7a;
+}
+
+/* --------------------------------------------
+   FADE-IN ANIMATION
+---------------------------------------------*/
+.login-card {
+    animation: fadeIn 1.2s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(40px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+/* ---------------------------------------------------
+   GLOBAL BACKGROUND (Visible in both light & dark)
+----------------------------------------------------*/
+body {
+    background-image: url("https://t4.ftcdn.net/jpg/03/46/97/65/360_F_346976561_fpYlR0EhFRJrkLnfS1Ma033lQypM5cQb.jpg");  /* <-- PUT YOUR IMAGE HERE */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;  /* ⭐ stays still when scrolling */
+    transition: background 0.3s ease-in-out;
+}
+
+/* ---------------------------------------------------
+   DARK MODE — KEEP THE BACKGROUND VISIBLE
+----------------------------------------------------*/
+.dark-mode {
+    background-image: url("https://t4.ftcdn.net/jpg/03/46/97/65/360_F_346976561_fpYlR0EhFRJrkLnfS1Ma033lQypM5cQb.jpg"); /* same image so it shows */
+    color: white;
+}
+
+/* Optional: dark overlay to make white text readable */
+.dark-mode::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.45); /* darkness overlay */
+    pointer-events: none;
+    z-index: -1;
+}
