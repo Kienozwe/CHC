@@ -2,10 +2,51 @@
 // Note: Replace OPENWEATHER_API_KEY with your key
 
 // ------------------ Classes + Storage ------------------
+// ------------------ FIXED LOGIN SYSTEM ------------------
+
 class User {
-  constructor(username,password){this.username=username;this.password=password}
-  login(u,p){return this.username===u&&this.password===p}
+    constructor(username, password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    validate(u, p) {
+        return this.username === u && this.password === p;
+    }
 }
+
+// ADMIN + STAFF login (editable)
+const accounts = [
+    { role: "admin", username: "admin123", password: "12345", redirect: "dashboard.html" },
+    { role: "staff", username: "staff001", password: "staffpass", redirect: "staff.html" }
+];
+
+document.addEventListener("DOMContentLoaded", () => {
+    const loginForm = document.getElementById("loginForm");
+
+    if (!loginForm) return;
+
+    loginForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const u = document.getElementById("username").value.trim();
+        const p = document.getElementById("password").value.trim();
+
+        // FIND MATCHING ACCOUNT
+        const acc = accounts.find(a => a.username === u && a.password === p);
+
+        if (acc) {
+            alert("Login Successfully!");
+            localStorage.setItem("sessionUser", acc.username);
+            window.location.href = acc.redirect;
+        } else {
+            alert("Incorrect Credentials!");
+        }
+    });
+});
+
+
+
 class HealthRecord{
   constructor(temp,symptoms,mood,location=null){
     this.id='r_'+Date.now();
@@ -193,3 +234,39 @@ const entry = {
     date: new Date().toLocaleString()
 };
 document.body.classList.add("dark-mode");
+
+// Apply saved theme on page load
+if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark-mode");
+}
+
+// PASSWORD TOGGLE
+document.addEventListener("DOMContentLoaded", () => {
+    const password = document.getElementById("password");
+    const toggle = document.getElementById("togglePassword");
+    const eyeIcon = document.getElementById("eyeIcon");
+
+    toggle.addEventListener("click", () => {
+        if (password.type === "password") {
+            password.type = "text";
+
+            // Slashed eye icon
+            eyeIcon.innerHTML = `
+                <path d="M2 2l20 20" stroke="#222" stroke-width="2"/>
+                <path d="M12 5c-5 0-9 3-11 7 1 2.5 3 4.8 5.3 6.3" 
+                      stroke="#222" stroke-width="2" fill="none"/>
+                <path d="M12 12c1.5 1.5 3.5 3.5 6.7 6.7" 
+                      stroke="#222" stroke-width="2" fill="none"/>
+            `;
+        } else {
+            password.type = "password";
+
+            // Normal eye icon
+            eyeIcon.innerHTML = `
+                <path d="M12 5C7 5 2.7 8.1 1 12c1.7 3.9 6 7 11 7s9.3-3.1 11-7c-1.7-3.9-6-7-11-7z" fill="#222"/>
+                <circle cx="12" cy="12" r="4" fill="#333"/>
+            `;
+        }
+    });
+});
+

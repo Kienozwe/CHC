@@ -147,3 +147,67 @@ body {
     pointer-events: none;
     z-index: -1;
 }
+
+/* Navbar base */
+.nav-bg {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+}
+
+/* Dark mode navbar */
+.dark-mode .nav-bg {
+    background: rgba(20, 20, 20, 0.7);
+}
+
+/* Hover + Active link effect */
+.nav-link {
+    position: relative;
+    color: #333;
+    font-weight: 500;
+    padding: 8px 14px;
+    transition: color 0.3s ease;
+}
+
+/* Underline slide effect */
+.nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0%;
+    height: 2px;
+    background: #0d6efd;
+    transition: width 0.3s ease;
+}
+
+/* Hover animation */
+.nav-link:hover::after {
+    width: 100%;
+}
+
+.nav-link:hover {
+    color: #0d6efd;
+}
+
+/* Dark mode color fix */
+.dark-mode .nav-link {
+    color: #ddd;
+}
+
+.dark-mode .nav-link:hover {
+    color: #66a2ff;
+}
+
+.dark-mode .nav-link::after {
+    background: #66a2ff;
+}
+
+/* Optional: active page highlighting */
+.nav-link.active,
+.nav-link.active:hover {
+    color: #0d6efd;
+}
+
+.dark-mode .nav-link.active {
+    color: #66a2ff;
+}

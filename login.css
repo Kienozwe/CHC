@@ -157,3 +157,19 @@ body {
     pointer-events: none;
     z-index: -1;
 }
+/* Password eye icon */
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 40px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.toggle-password svg {
+    pointer-events: none;
+}
+
+.dark-mode .toggle-password svg path {
+    fill: #ddd !important;
+}
