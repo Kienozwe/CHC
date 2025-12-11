@@ -270,6 +270,23 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 600 !important;
 }
 
+/* Center specific page titles */
+.about-title {
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+/* Stronger centering to override potential parents */
+.about-section {
+    text-align: center !important;
+}
+
+.about-section .about-title {
+    display: block !important;
+    margin: 0 auto !important;
+    text-align: center !important;
+}
+
 /* ==================================================
    MODAL STYLE (Centered)
 ================================================== */
