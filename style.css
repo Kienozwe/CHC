@@ -398,6 +398,34 @@ h1, h2, h3, h4, h5, h6 {
     color: #e7e7e7;
 }
 
+/* Leaflet popup readability fixes: ensure popups show readable text in both themes */
+.leaflet-container .leaflet-popup-content-wrapper {
+    background: rgba(255,255,255,0.95) !important;
+    color: #000 !important;
+    border-radius: 8px !important;
+}
+.leaflet-container .leaflet-popup-tip-background {
+    background: rgba(255,255,255,0.95) !important;
+}
+
+/* Dark mode: make popup background dark and text light */
+.dark-mode .leaflet-popup-content-wrapper {
+    background: rgba(30,30,30,0.95) !important;
+    color: #f0f0f0 !important;
+}
+.dark-mode .leaflet-popup-tip-background {
+    background: rgba(30,30,30,0.95) !important;
+}
+
+/* Ensure popup close button is visible in dark mode */
+.leaflet-popup-close-button {
+    color: #222 !important;
+    text-shadow: none !important;
+}
+.dark-mode .leaflet-popup-close-button {
+    color: #fff !important;
+}
+
 .dark-mode .btn-close {
     filter: invert(1);
 }

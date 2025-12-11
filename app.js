@@ -168,7 +168,10 @@ async function fetchHealthcarePOIsForBounds(bounds){
             const addr = tags['addr:full'] || tags['addr:street'] || '';
             const phone = tags.phone || tags['contact:phone'] || '';
             const popup = `<strong>${name}</strong><br>${amenity}${addr?'<br>'+addr:''}${phone?'<br>📞 '+phone:''}`;
-            L.marker([lat2, lon2]).addTo(window._snapshotHealthCluster).bindPopup(popup);
+            const marker = L.marker([lat2, lon2], { title: name });
+            marker.bindPopup(popup);
+            marker.on('click', () => { marker.openPopup(); });
+            window._snapshotHealthCluster.addLayer(marker);
         });
     }catch(err){
         console.error('Overpass fetch error', err);
@@ -228,7 +231,9 @@ async function fetchHealthcarePOIsForBoundsType(bounds, amenity, layer){
             const addr = tags['addr:full'] || tags['addr:street'] || '';
             const phone = tags.phone || tags['contact:phone'] || '';
             const popup = `<strong>${name}</strong><br>${amenity}${addr?'<br>'+addr:''}${phone?'<br>📞 '+phone:''}`;
-            const m = L.marker([lat2, lon2]).bindPopup(popup);
+            const m = L.marker([lat2, lon2], { title: name });
+            m.bindPopup(popup);
+            m.on('click', () => { m.openPopup(); });
             if(layer.addLayer) {
                 layer.addLayer(m);
             } else {
