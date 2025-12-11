@@ -54,6 +54,11 @@ body::after {
     pointer-events: none;
 }
 
+/* Make the welcome page background slightly gray in light mode for better contrast */
+body.welcome-body:not(.dark-mode)::after {
+    background: rgba(245,245,247,0.7);
+}
+
 /* DARK MODE BODY */
 body.dark-mode::before {
     filter: blur(8px) brightness(0.6);
