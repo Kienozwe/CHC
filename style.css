@@ -148,6 +148,60 @@ body.dark-mode #themeToggle {
     color: white;
 }
 
+/* Style the Login button: no underline and uppercase label */
+#loginBtn {
+    text-decoration: none !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.6px;
+}
+
+#loginBtn.theme-btn {
+    right: 20px; /* preserve index inline positioning when theme-btn is used */
+}
+
+/* Add a consistent gap between theme toggle and login button */
+.theme-btn + #loginBtn,
+#themeToggle + #loginBtn {
+    margin-left: 12px !important;
+}
+
+/* For bootstrap button variants in navbars */
+#themeToggle.me-2 + #loginBtn,
+.btn.me-2 + #loginBtn {
+    margin-left: 8px !important;
+}
+
+/* Ensure navbar placement has clear spacing */
+.navbar #themeToggle {
+    margin-right: 10rem !important;
+}
+
+.navbar #themeToggle + #loginBtn {
+    margin-left: 12px !important;
+}
+
+/* Strong fallback: force inline-block and margins for both buttons everywhere */
+#themeToggle, #loginBtn {
+    display: inline-block !important;
+    vertical-align: middle !important;
+}
+
+#themeToggle {
+    margin-right: 2rem !important;
+}
+
+#loginBtn {
+    margin-left: 12px !important;
+}
+
+/* Fix for index page where buttons are fixed-position .theme-btn */
+body.welcome-body #themeToggle {
+    right: 90px !important;
+}
+body.welcome-body #loginBtn {
+    right: 20px !important;
+}
+
 .logout-btn {
     position: fixed;
     top: 20px;
