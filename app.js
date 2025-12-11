@@ -84,8 +84,11 @@ document.addEventListener('DOMContentLoaded',()=>{
   // dashboard logic
   if(document.getElementById('healthChart')){
     renderChart();initSnapshot();renderRecent();
-    document.getElementById('refreshWeather').addEventListener('click',()=>fetchWeather(document.getElementById('cityInput').value||'Manila'));
-    fetchWeather(document.getElementById('cityInput').value||'Manila');
+    document.getElementById('refreshWeather').addEventListener('click',()=>fetchWeather(document.getElementById('cityInput').value||'Manolo Fortich'));
+    fetchWeather(document.getElementById('cityInput').value||'Manolo Fortich');
+    
+    // Refresh recent entries every 1 second to catch deletions from records page
+    setInterval(renderRecent, 1000);
   }
 
   // map page
@@ -99,26 +102,333 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 
 // ------------------ Weather (OpenWeatherMap) ------------------
-const OPENWEATHER_API_KEY='REPLACE_WITH_YOUR_KEY';
-async function fetchWeather(city){try{const res=await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${OPENWEATHER_API_KEY}&units=metric`);const data=await res.json();if(res.ok){document.getElementById('w-temp').innerText=data.main.temp+' °C';document.getElementById('w-cond').innerText=data.weather[0].description;document.getElementById('w-hum').innerText='Humidity: '+data.main.humidity+'%';document.getElementById('w-alert').innerText='No alerts (OneCall requires different endpoint)'}else{document.getElementById('w-temp').innerText='--';document.getElementById('w-cond').innerText=data.message||'Error'}}catch(e){console.error(e)}}
+const OPENWEATHER_API_KEY='65a57d561c8e84defdbf061e498dcac6';
+async function fetchWeather(city){try{const res=await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=${OPENWEATHER_API_KEY}&units=metric`);const data=await res.json();if(res.ok){document.getElementById('w-temp').innerText=data.main.temp+' °C';const rawCond=(data.weather&&data.weather[0]&&data.weather[0].description)?data.weather[0].description:'';const titleCond=rawCond.split(' ').map(w=>w?w.charAt(0).toUpperCase()+w.slice(1):'').join(' ');document.getElementById('w-cond').innerText=titleCond;document.getElementById('w-hum').innerText='Humidity: '+data.main.humidity+'%';document.getElementById('w-alert').innerText='No alert';updateSnapshotMap(data.coord.lat,data.coord.lon)}else{document.getElementById('w-temp').innerText='--';document.getElementById('w-cond').innerText=data.message||'Error'}}catch(e){console.error(e)}}
+
+// Update map snapshot to show the city
+function updateSnapshotMap(lat,lng){
+    if(window._snapshotMap){
+        window._snapshotMap.setView([lat,lng],12);
+        // use viewport bounds to fetch POIs (no manual lat/lng required)
+        const now = Date.now();
+        const minInterval = 5000; // ms
+        const fetchBounds = () => {
+            const bounds = window._snapshotMap.getBounds();
+            fetchHealthcarePOIsForBounds(bounds);
+        };
+        if(!window._lastOverpassTime || (now - window._lastOverpassTime) > minInterval){
+            window._lastOverpassTime = now;
+            fetchBounds();
+        } else {
+            clearTimeout(window._overpassTimer);
+            window._overpassTimer = setTimeout(()=>{
+                window._lastOverpassTime = Date.now();
+                fetchBounds();
+            }, minInterval - (now - window._lastOverpassTime));
+        }
+    }
+}
+
+// Fetch nearby hospitals/clinics from Overpass (OpenStreetMap) and add markers
+
+
+// Fetch POIs using a Leaflet bounds object (bbox). Protect against huge areas.
+async function fetchHealthcarePOIsForBounds(bounds){
+    if(!window._snapshotMap) return;
+    const sw = bounds.getSouthWest();
+    const ne = bounds.getNorthEast();
+    const latSpan = Math.abs(ne.lat - sw.lat);
+    const lngSpan = Math.abs(ne.lng - sw.lng);
+
+    const MAX_LAT_SPAN = 6.5; const MAX_LNG_SPAN = 12;
+    if(latSpan > MAX_LAT_SPAN || lngSpan > MAX_LNG_SPAN){
+        console.warn('Viewport too large for Overpass query; narrow the view or use server-side data for country-wide requests.');
+        return;
+    }
+
+    const bbox = `${sw.lat},${sw.lng},${ne.lat},${ne.lng}`;
+    const query = `[out:json];(node["amenity"="hospital"](${bbox});node["amenity"="clinic"](${bbox});node["amenity"="social_facility"](${bbox});way["amenity"="hospital"](${bbox});way["amenity"="clinic"](${bbox});way["amenity"="social_facility"](${bbox}););out center;`;
+    const url = 'https://overpass-api.de/api/interpreter?data=' + encodeURIComponent(query);
+    try{
+        const res = await fetch(url);
+        const json = await res.json();
+        const elements = json.elements || [];
+
+        if(window._snapshotHealthCluster){
+            window._snapshotHealthCluster.clearLayers();
+        }
+
+        elements.forEach(e=>{
+            const lat2 = e.lat || (e.center && e.center.lat);
+            const lon2 = e.lon || (e.center && e.center.lon);
+            if(!lat2 || !lon2) return;
+            const tags = e.tags || {};
+            const name = tags.name || tags['name:en'] || 'Unnamed';
+            const amenity = tags.amenity || '';
+            const addr = tags['addr:full'] || tags['addr:street'] || '';
+            const phone = tags.phone || tags['contact:phone'] || '';
+            const popup = `<strong>${name}</strong><br>${amenity}${addr?'<br>'+addr:''}${phone?'<br>📞 '+phone:''}`;
+            L.marker([lat2, lon2]).addTo(window._snapshotHealthCluster).bindPopup(popup);
+        });
+    }catch(err){
+        console.error('Overpass fetch error', err);
+    }
+}
 
 // ------------------ Chart ------------------
 function renderChart(){const arr=Storage.getAll();const counts={Healthy:0,'Mild Symptoms':0,'Needs Check-up':0};arr.forEach(r=>counts[r.status]=(counts[r.status]||0)+1);const ctx=document.getElementById('healthChart').getContext('2d');if(window._healthChart)window._healthChart.destroy();window._healthChart=new Chart(ctx,{type:'pie',data:{labels:Object.keys(counts),datasets:[{data:Object.values(counts)}]}})}
 
 // ------------------ Map Snapshot ------------------
-function initSnapshot(){const map=L.map('mapSnapshot',{zoomControl:false,attributionControl:false}).setView([14.5995,120.9842],12);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);L.marker([14.6,120.98]).addTo(map).bindPopup('Hospital A');L.marker([14.61,120.99]).addTo(map).bindPopup('Clinic B')}
+function initSnapshot(){
+    const map = L.map('mapSnapshot', { zoomControl:false, attributionControl:true }).setView([8.3677,124.8656],12);
+    window._snapshotMap = map;
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
+    
+    // create cluster group for all health POIs (hospitals, clinics, posts)
+    window._snapshotHealthCluster = L.markerClusterGroup({showCoverageOnHover:false, spiderfyOnMaxZoom:true, maxClusterRadius:50}).addTo(map);
+    
+    // sample markers (will be replaced by Overpass results)
+    L.marker([14.6,120.98]).addTo(map).bindPopup('Hospital A');
+    L.marker([14.61,120.99]).addTo(map).bindPopup('Clinic B');
 
-// ------------------ Full Map (map.html) ------------------
-function initFullMap(){const map=L.map('fullMap').setView([14.5995,120.9842],12);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);const hospitals=L.layerGroup().addTo(map);const clinics=L.layerGroup().addTo(map);const posts=L.layerGroup().addTo(map);const resources=[{type:'hospital',name:'Hospital A',lat:14.6,lng:120.98},{type:'clinic',name:'Clinic B',lat:14.61,lng:120.99},{type:'post',name:'Community Post 1',lat:14.595,lng:120.985}];resources.forEach(r=>{const m=L.marker([r.lat,r.lng]).bindPopup(`<strong>${r.name}</strong><br>${r.type}`);if(r.type==='hospital')hospitals.addLayer(m);if(r.type==='clinic')clinics.addLayer(m);if(r.type==='post')posts.addLayer(m)});document.getElementById('showHospitals').addEventListener('change',e=>{e.target.checked?map.addLayer(hospitals):map.removeLayer(hospitals)});document.getElementById('showClinics').addEventListener('change',e=>{e.target.checked?map.addLayer(clinics):map.removeLayer(clinics)});document.getElementById('showPosts').addEventListener('change',e=>{e.target.checked?map.addLayer(posts):map.removeLayer(posts)})}
+    // fetch POIs whenever the snapshot map view changes
+    map.on('moveend', () => {
+        const bounds = map.getBounds();
+        fetchHealthcarePOIsForBounds(bounds);
+    });
+}
+
+// Full Map is initialized separately below
+
+// Fetch POIs for a specific amenity and add to the provided layer (cluster)
+async function fetchHealthcarePOIsForBoundsType(bounds, amenity, layer){
+    const sw = bounds.getSouthWest();
+    const ne = bounds.getNorthEast();
+    const latSpan = Math.abs(ne.lat - sw.lat);
+    const lngSpan = Math.abs(ne.lng - sw.lng);
+    const MAX_LAT_SPAN = 6.5; const MAX_LNG_SPAN = 12;
+    if(latSpan > MAX_LAT_SPAN || lngSpan > MAX_LNG_SPAN){
+        console.warn('Viewport too large for Overpass query; narrow the view or use server-side data.');
+        return;
+    }
+    const bbox = `${sw.lat},${sw.lng},${ne.lat},${ne.lng}`;
+    const query = `[out:json];(node["amenity"="${amenity}"](${bbox});way["amenity"="${amenity}"](${bbox}););out center;`;
+    const url = 'https://overpass-api.de/api/interpreter?data=' + encodeURIComponent(query);
+    try{
+        const res = await fetch(url);
+        const json = await res.json();
+        const elements = json.elements || [];
+        if(layer.clearLayers) layer.clearLayers();
+        elements.forEach(e=>{
+            const lat2 = e.lat || (e.center && e.center.lat);
+            const lon2 = e.lon || (e.center && e.center.lon);
+            if(!lat2 || !lon2) return;
+            const tags = e.tags || {};
+            const name = tags.name || tags['name:en'] || 'Unnamed';
+            const addr = tags['addr:full'] || tags['addr:street'] || '';
+            const phone = tags.phone || tags['contact:phone'] || '';
+            const popup = `<strong>${name}</strong><br>${amenity}${addr?'<br>'+addr:''}${phone?'<br>📞 '+phone:''}`;
+            const m = L.marker([lat2, lon2]).bindPopup(popup);
+            if(layer.addLayer) {
+                layer.addLayer(m);
+            } else {
+                const mapRef = window._snapshotMap || window._fullMap;
+                if(mapRef) layer.addTo(mapRef).addLayer(m);
+            }
+        });
+    }catch(err){console.error('Overpass fetch error', err);}
+}
+
+function initFullMap(){
+    const map = L.map('fullMap').setView([8.3677,124.8656],12);
+    window._fullMap = map;
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
+
+    // cluster groups for hospitals, clinics, and posts
+    const hospitals = L.markerClusterGroup({showCoverageOnHover:false, spiderfyOnMaxZoom:true, maxClusterRadius:60}).addTo(map);
+    const clinics = L.markerClusterGroup({showCoverageOnHover:false, spiderfyOnMaxZoom:true, maxClusterRadius:60}).addTo(map);
+    const posts = L.markerClusterGroup({showCoverageOnHover:false, spiderfyOnMaxZoom:true, maxClusterRadius:60}).addTo(map);
+
+    // initial fetch for current viewport
+    const bounds = map.getBounds();
+    fetchHealthcarePOIsForBoundsType(bounds, 'hospital', hospitals);
+    fetchHealthcarePOIsForBoundsType(bounds, 'clinic', clinics);
+    fetchHealthcarePOIsForBoundsType(bounds, 'social_facility', posts);
+
+    // refresh on moveend (debounced in caller if needed)
+    map.on('moveend', ()=>{
+        const b = map.getBounds();
+        fetchHealthcarePOIsForBoundsType(b, 'hospital', hospitals);
+        fetchHealthcarePOIsForBoundsType(b, 'clinic', clinics);
+        fetchHealthcarePOIsForBoundsType(b, 'social_facility', posts);
+    });
+
+    // add sample post as fallback
+    const samplePost = L.marker([14.595,120.985]).bindPopup('<strong>Community Post 1</strong><br>Community Health Post');
+    posts.addLayer(samplePost);
+
+    document.getElementById('showHospitals').addEventListener('change', e=>{ e.target.checked?map.addLayer(hospitals):map.removeLayer(hospitals) });
+    document.getElementById('showClinics').addEventListener('change', e=>{ e.target.checked?map.addLayer(clinics):map.removeLayer(clinics) });
+    document.getElementById('showPosts').addEventListener('change', e=>{ e.target.checked?map.addLayer(posts):map.removeLayer(posts) });
+}
 
 // ------------------ Checker (checker.html) ------------------
-function initChecker(){const map=L.map('checkerMap').setView([14.5995,120.9842],12);L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);let chosen=null;map.on('click',e=>{const{lat,lng}=e.latlng;if(chosen)map.removeLayer(chosen);chosen=L.marker([lat,lng]).addTo(map);document.getElementById('locInput').value=`${lat.toFixed(5)},${lng.toFixed(5)}`});const form=document.getElementById('checkerForm');form.addEventListener('submit',e=>{e.preventDefault();const temp=document.getElementById('tempInput').value;const symptoms=document.getElementById('symptomsInput').value;const mood=document.getElementById('moodInput').value;const loc=document.getElementById('locInput').value||null;const rec=new HealthRecord(temp,symptoms,mood,loc);Storage.add(rec);alert('Saved');location.href='records.html'})}
+function initChecker(){
+    const map = L.map('checkerMap').setView([8.3677,124.8656],12);
+    window._checkerMap = map;
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap contributors' }).addTo(map);
+    
+    // cluster groups for hospitals, clinics, and posts
+    const hospitals = L.markerClusterGroup({showCoverageOnHover:false, spiderfyOnMaxZoom:true, maxClusterRadius:60}).addTo(map);
+    const clinics = L.markerClusterGroup({showCoverageOnHover:false, spiderfyOnMaxZoom:true, maxClusterRadius:60}).addTo(map);
+    const posts = L.markerClusterGroup({showCoverageOnHover:false, spiderfyOnMaxZoom:true, maxClusterRadius:60}).addTo(map);
+    
+    // fetch POIs for current viewport
+    const bounds = map.getBounds();
+    fetchHealthcarePOIsForBoundsType(bounds, 'hospital', hospitals);
+    fetchHealthcarePOIsForBoundsType(bounds, 'clinic', clinics);
+    fetchHealthcarePOIsForBoundsType(bounds, 'social_facility', posts);
+    
+    // refresh on moveend
+    map.on('moveend', ()=>{
+        const b = map.getBounds();
+        fetchHealthcarePOIsForBoundsType(b, 'hospital', hospitals);
+        fetchHealthcarePOIsForBoundsType(b, 'clinic', clinics);
+        fetchHealthcarePOIsForBoundsType(b, 'social_facility', posts);
+    });
+    
+    // user location marker (click to set)
+    let chosen = null;
+    map.on('click', async e=>{
+        const {lat, lng} = e.latlng;
+        if(chosen) map.removeLayer(chosen);
+        chosen = L.marker([lat, lng]).addTo(map);
+        
+        // reverse geocode to get address
+        const locInput = document.getElementById('locInput');
+        locInput.value = 'Getting address...';
+        
+        try{
+            const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
+            const res = await fetch(url);
+            const data = await res.json();
+            const address = data.address && (data.address.road || data.address.village || data.address.city || data.address.county || 'Unknown location');
+            locInput.value = address || `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+            chosen.bindPopup(`<strong>${address}</strong><br>${lat.toFixed(5)}, ${lng.toFixed(5)}`).openPopup();
+        }catch(err){
+            console.error('Geocoding error', err);
+            locInput.value = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+            chosen.bindPopup(`${lat.toFixed(5)}, ${lng.toFixed(5)}`).openPopup();
+        }
+    });
+    
+    // form submission
+    const form = document.getElementById('checkerForm');
+    form.addEventListener('submit', e=>{
+        e.preventDefault();
+        const temp = document.getElementById('tempInput').value;
+        const symptoms = document.getElementById('symptomsInput').value;
+        const mood = document.getElementById('moodInput').value;
+        const loc = document.getElementById('locInput').value || null;
+        const rec = new HealthRecord(temp, symptoms, mood, loc);
+        Storage.add(rec);
+        alert('Saved');
+        location.href = 'records.html';
+    });
+}
 
 // ------------------ Records (records.html) ------------------
-function initRecords(){const tbody=document.querySelector('#recordsTable tbody');const viewModal=new bootstrap.Modal(document.getElementById('viewModal'));function render(){const all=Storage.getAll();tbody.innerHTML=all.map(r=>`<tr><td>${r.id}</td><td>${r.date}</td><td>${r.temperature}°C</td><td>${r.status}</td><td><button class="btn btn-sm btn-primary view" data-id="${r.id}">View</button> <button class="btn btn-sm btn-danger del" data-id="${r.id}">Delete</button></td></tr>`).join('');document.querySelectorAll('.view').forEach(b=>b.addEventListener('click',e=>{const id=e.target.dataset.id;const rec=Storage.getAll().find(x=>x.id===id);document.getElementById('modalBody').innerHTML=`<p><strong>Status:</strong> ${rec.status}</p><p><strong>Temp:</strong> ${rec.temperature}°C</p><p><strong>Symptoms:</strong> ${rec.symptoms}</p><p><strong>Mood:</strong> ${rec.mood}</p><p><strong>Location:</strong> ${rec.location||'n/a'}</p><p><strong>Date:</strong> ${rec.date}</p>`;viewModal.show()}));document.querySelectorAll('.del').forEach(b=>b.addEventListener('click',e=>{if(confirm('Delete?')){Storage.delete(e.target.dataset.id);render()}}))}render()}
+function initRecords(){
+    const tbody = document.querySelector('#recordsTable tbody');
+    const viewModal = new bootstrap.Modal(document.getElementById('viewModal'));
+
+    function render(){
+        // Prefer the 'records' array (submitted via checker form). Fallback to Storage healthRecords.
+        const userRecords = JSON.parse(localStorage.getItem('records')) || null;
+        if(userRecords && Array.isArray(userRecords) && userRecords.length){
+            tbody.innerHTML = userRecords.map((r, idx) => `
+                <tr>
+                    <td>${(r.name||'N/A')}</td>
+                    <td>${r.date}</td>
+                    <td>${r.temperature}°C</td>
+                    <td>${r.temperature >= 37.5 ? 'Fever' : 'Normal'}</td>
+                    <td>
+                        <button class="btn btn-sm btn-primary view" data-idx="${idx}">View</button>
+                        <button class="btn btn-sm btn-danger del" data-idx="${idx}">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            document.querySelectorAll('.view').forEach(b => b.addEventListener('click', e => {
+                const i = parseInt(e.target.dataset.idx, 10);
+                const rec = JSON.parse(localStorage.getItem('records'))[i];
+                document.getElementById('modalBody').innerHTML = `
+                    <p><strong>Name:</strong> ${rec.name}</p>
+                    <p><strong>Age:</strong> ${rec.age}</p>
+                    <p><strong>Gender:</strong> ${rec.gender}</p>
+                    <p><strong>Address:</strong> ${rec.address}</p>
+                    <p><strong>Temperature:</strong> ${rec.temperature}°C</p>
+                    <p><strong>Symptoms:</strong> ${rec.symptoms}</p>
+                    <p><strong>Mood:</strong> ${rec.mood}</p>
+                    <p><strong>Location:</strong> ${rec.location || 'N/A'}</p>
+                    <p><strong>Date Submitted:</strong> ${rec.date}</p>
+                `;
+                viewModal.show();
+            }));
+
+            document.querySelectorAll('.del').forEach(b => b.addEventListener('click', e => {
+                const i = parseInt(e.target.dataset.idx, 10);
+                if(confirm('Delete this record?')){
+                    const arr = JSON.parse(localStorage.getItem('records')) || [];
+                    arr.splice(i,1);
+                    localStorage.setItem('records', JSON.stringify(arr));
+                    render();
+                }
+            }));
+        } else {
+            // No user-submitted records — show empty state (do NOT fall back to internal coded records)
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center">No records found.</td></tr>`;
+        }
+    }
+
+    render();
+}
 
 // ------------------ Dashboard helpers ------------------
-function renderRecent(){const arr=Storage.getAll().slice(0,5);const el=document.getElementById('recentList');if(!el) return;el.innerHTML=arr.map(r=>`<div class="col-md-4"><div class="card p-2"><strong>${r.status}</strong><div>${r.temperature}°C</div><small class="text-muted">${r.date}</small></div></div>`).join('')}
+function renderRecent(){
+    const el=document.getElementById('recentList');
+    if(!el) return;
+    
+    // Prioritize user-submitted records (same as records page)
+    const userRecords = JSON.parse(localStorage.getItem('records')) || null;
+    let recentRecords = [];
+    
+    if(userRecords && Array.isArray(userRecords) && userRecords.length){
+        // Use user-submitted records
+        recentRecords = userRecords.slice(0,5);
+        el.innerHTML = recentRecords.map(r => `
+            <div class="col-md-4">
+                <div class="card p-2">
+                    <strong>${r.temperature >= 37.5 ? 'Fever' : 'Normal'}</strong>
+                    <div>${r.temperature}°C</div>
+                    <small class="text-muted">${r.date}</small>
+                </div>
+            </div>
+        `).join('');
+    } else {
+        // Fallback to Storage records (internal)
+        const arr = Storage.getAll().slice(0,5);
+        el.innerHTML = arr.map(r => `
+            <div class="col-md-4">
+                <div class="card p-2">
+                    <strong>${r.status}</strong>
+                    <div>${r.temperature}°C</div>
+                    <small class="text-muted">${r.date}</small>
+                </div>
+            </div>
+        `).join('');
+    }
+}
 // ------------------ FIXED CHECKER SUBMISSION ------------------
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -127,9 +437,15 @@ document.addEventListener("DOMContentLoaded", () => {
         form.addEventListener("submit", function (e) {
             e.preventDefault();
 
+            const ageVal = parseInt(document.getElementById("ageInput").value, 10);
+            if (isNaN(ageVal) || ageVal < 0) {
+                alert('Please enter a valid non-negative age');
+                return;
+            }
+
             const entry = {
                 name: document.getElementById("nameInput").value,
-                age: document.getElementById("ageInput").value,
+                age: ageVal,
                 gender: document.getElementById("genderInput").value,
                 address: document.getElementById("addressInput").value,
                 temperature: document.getElementById("tempInput").value,
@@ -208,7 +524,7 @@ function loadRecords() {
     records.forEach((rec, index) => {
         const row = `
             <tr>
-                <td>${rec.name}</td>   <!-- 👈 FIXED: Shows patient name -->
+                <td>${rec.name}</td>   
                 <td>${rec.date}</td>
                 <td>${rec.temperature}°C</td>
                 <td>${rec.temperature >= 37.5 ? "Fever" : "Normal"}</td>
@@ -222,18 +538,6 @@ function loadRecords() {
         tbody.insertAdjacentHTML("beforeend", row);
     });
 }
-const entry = {
-    name: document.getElementById("nameInput").value,
-    age: document.getElementById("ageInput").value,
-    gender: document.getElementById("genderInput").value,
-    address: document.getElementById("addressInput").value,
-    temperature: document.getElementById("tempInput").value,
-    symptoms: document.getElementById("symptomsInput").value,
-    mood: document.getElementById("moodInput").value,
-    location: document.getElementById("locInput").value,
-    date: new Date().toLocaleString()
-};
-document.body.classList.add("dark-mode");
 
 // Apply saved theme on page load
 if (localStorage.getItem("theme") === "dark") {
@@ -245,28 +549,29 @@ document.addEventListener("DOMContentLoaded", () => {
     const password = document.getElementById("password");
     const toggle = document.getElementById("togglePassword");
     const eyeIcon = document.getElementById("eyeIcon");
+    if (toggle && password && eyeIcon) {
+        toggle.addEventListener("click", () => {
+            if (password.type === "password") {
+                password.type = "text";
 
-    toggle.addEventListener("click", () => {
-        if (password.type === "password") {
-            password.type = "text";
+                // Slashed eye icon
+                eyeIcon.innerHTML = `
+                    <path d="M2 2l20 20" stroke="#222" stroke-width="2"/>
+                    <path d="M12 5c-5 0-9 3-11 7 1 2.5 3 4.8 5.3 6.3" 
+                          stroke="#222" stroke-width="2" fill="none"/>
+                    <path d="M12 12c1.5 1.5 3.5 3.5 6.7 6.7" 
+                          stroke="#222" stroke-width="2" fill="none"/>
+                `;
+            } else {
+                password.type = "password";
 
-            // Slashed eye icon
-            eyeIcon.innerHTML = `
-                <path d="M2 2l20 20" stroke="#222" stroke-width="2"/>
-                <path d="M12 5c-5 0-9 3-11 7 1 2.5 3 4.8 5.3 6.3" 
-                      stroke="#222" stroke-width="2" fill="none"/>
-                <path d="M12 12c1.5 1.5 3.5 3.5 6.7 6.7" 
-                      stroke="#222" stroke-width="2" fill="none"/>
-            `;
-        } else {
-            password.type = "password";
-
-            // Normal eye icon
-            eyeIcon.innerHTML = `
-                <path d="M12 5C7 5 2.7 8.1 1 12c1.7 3.9 6 7 11 7s9.3-3.1 11-7c-1.7-3.9-6-7-11-7z" fill="#222"/>
-                <circle cx="12" cy="12" r="4" fill="#333"/>
-            `;
-        }
-    });
+                // Normal eye icon
+                eyeIcon.innerHTML = `
+                    <path d="M12 5C7 5 2.7 8.1 1 12c1.7 3.9 6 7 11 7s9.3-3.1 11-7c-1.7-3.9-6-7-11-7z" fill="#222"/>
+                    <circle cx="12" cy="12" r="4" fill="#333"/>
+                `;
+            }
+        });
+    }
 });
 

@@ -1,11 +1,13 @@
 /* ==================================================
-   GLOBAL RESET
+   GLOBAL RESET & POPPINS FONT
 ================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: "Poppins", sans-serif;
+    font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
 }
 
 body {
@@ -14,6 +16,12 @@ body {
     transition: background 0.5s ease, color 0.5s ease;
     position: relative;
     padding-top: 80px; /* ensure content below navbar */
+    font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
+}
+
+/* Ensure ALL elements use Poppins */
+*, *::before, *::after {
+    font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
 }
 
 /* ==================================================
@@ -56,7 +64,58 @@ body.dark-mode::after {
 }
 
 body.dark-mode {
-    color: #e7e7e7;
+    color: #ffffff !important;
+}
+
+body {
+    color: #000000 !important;
+}
+
+/* Apply text color to all elements in dark mode */
+.dark-mode, .dark-mode * {
+    color: #ffffff !important;
+}
+
+/* Light mode - all text black */
+body:not(.dark-mode), body:not(.dark-mode) * {
+    color: #000000 !important;
+}
+
+/* Preserve specific element colors where needed */
+.dark-mode .navbar-brand,
+.dark-mode .nav-link {
+    color: #ffffff !important;
+}
+
+.dark-mode h1, .dark-mode h2, .dark-mode h3, .dark-mode h4, .dark-mode h5, .dark-mode h6 {
+    color: #ffffff !important;
+}
+
+.dark-mode p, .dark-mode span, .dark-mode label, .dark-mode li, .dark-mode td {
+    color: #ffffff !important;
+}
+
+.dark-mode .btn {
+    color: #ffffff !important;
+}
+
+.dark-mode .form-label, .dark-mode .form-text {
+    color: #ffffff !important;
+}
+
+.dark-mode .table {
+    color: #ffffff !important;
+}
+
+/* Light mode explicit rules */
+body:not(.dark-mode) h1, body:not(.dark-mode) h2, body:not(.dark-mode) h3, 
+body:not(.dark-mode) h4, body:not(.dark-mode) h5, body:not(.dark-mode) h6 {
+    color: #000000 !important;
+}
+
+body:not(.dark-mode) p, body:not(.dark-mode) span, body:not(.dark-mode) label, 
+body:not(.dark-mode) li, body:not(.dark-mode) td {
+    color: #000000 !important;
 }
 
 /* ==================================================
@@ -135,8 +194,11 @@ body.dark-mode .logout-btn:hover {
 
 .nav-link {
     position: relative;
-    padding: 8px 14px;
+    padding: 12px 20px;
+    margin: 0 8px;
     transition: color 0.3s ease;
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
 }
 
 .nav-link::after {
@@ -168,23 +230,214 @@ body.dark-mode .nav-link::after { background: #66a2ff; }
 body.dark-mode .nav-link.active { color: #66a2ff; }
 
 /* ==================================================
-   MODAL STYLE
+   CARD & CONTAINER STYLES (with blur)
 ================================================== */
+.card {
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 15px !important;
+    transition: 0.3s ease !important;
+}
+
+.card:hover {
+    backdrop-filter: blur(12px) !important;
+    transform: translateY(-4px) !important;
+}
+
+.card-bg {
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+body.dark-mode .card {
+    background: rgba(30, 30, 30, 0.9) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+body.dark-mode .card-bg {
+    background: rgba(30, 30, 30, 0.9) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.container {
+    font-family: "Poppins", sans-serif !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: "Poppins", sans-serif !important;
+    font-weight: 600 !important;
+}
+
+/* ==================================================
+   MODAL STYLE (Centered)
+================================================== */
+/* Center modal dialogs vertically and horizontally */
+.modal {
+    position: fixed !important;
+    inset: 0 !important;
+    display: none !important;
+    z-index: 10001 !important;
+    padding: 1rem !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+}
+
+.modal.show {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.modal-dialog {
+    margin: 0 !important;
+    max-height: calc(100vh - 2rem) !important;
+    overflow-y: auto !important;
+    position: relative !important;
+    z-index: 10002 !important;
+    pointer-events: auto !important;
+}
+
 .modal-content {
     background: #fff;
     color: #000;
     border-radius: 12px;
     transition: 0.3s ease;
+    max-width: 680px;
+    width: 100%;
 }
 
 .dark-mode .modal-content {
     background: #1e1e1e;
-    color: #fff;
+    color: #e7e7e7;
 }
 
 .dark-mode .modal-header,
 .dark-mode .modal-footer {
     border-color: #444;
+    color: #e7e7e7;
+}
+
+.dark-mode .modal-title {
+    color: #e7e7e7;
+}
+
+.dark-mode .btn-close {
+    filter: invert(1);
+}
+
+/* ==================================================
+   DARK MODE TEXT COLOR & FONT CONSISTENCY
+================================================== */
+.dark-mode p, .dark-mode span, .dark-mode li, .dark-mode td, 
+.dark-mode label, .dark-mode .form-label, .dark-mode .form-text {
+    color: #e7e7e7 !important;
+    font-family: "Poppins", sans-serif !important;
+}
+
+.dark-mode .form-control {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: #e7e7e7 !important;
+    font-family: "Poppins", sans-serif !important;
+}
+
+.dark-mode .form-control:focus {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border-color: #66a2ff !important;
+    color: #e7e7e7 !important;
+}
+
+.dark-mode .form-select {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: #000000 !important;
+    font-family: "Poppins", sans-serif !important;
+}
+
+.dark-mode .form-select:focus {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border-color: #66a2ff !important;
+    color: #000000 !important;
+}
+
+/* Gender selection - always black */
+#genderInput, .form-select {
+    color: #000000 !important;
+}
+
+#genderInput option, .form-select option {
+    color: #000000 !important;
+    background-color: #ffffff !important;
+}
+
+.dark-mode #genderInput, .dark-mode .form-select {
+    color: #000000 !important;
+}
+
+.dark-mode #genderInput option, .dark-mode .form-select option {
+    color: #000000 !important;
+    background-color: #ffffff !important;
+}
+
+.dark-mode .btn-primary {
+    background-color: #0d6efd !important;
+    border-color: #0d6efd !important;
+    color: #fff !important;
+    font-family: "Poppins", sans-serif !important;
+}
+
+.dark-mode .btn-secondary {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+    color: #fff !important;
+    font-family: "Poppins", sans-serif !important;
+}
+
+.dark-mode .btn-danger {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: #fff !important;
+    font-family: "Poppins", sans-serif !important;
+}
+
+.dark-mode textarea {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.2) !important;
+    color: #e7e7e7 !important;
+    font-family: "Poppins", sans-serif !important;
+}
+
+.dark-mode textarea:focus {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+    border-color: #66a2ff !important;
+    color: #e7e7e7 !important;
+}
+
+/* Placeholder text - black on light mode, white on dark mode */
+input::placeholder, textarea::placeholder, select::placeholder {
+    color: #000000 !important;
+}
+
+.dark-mode input::placeholder, .dark-mode textarea::placeholder, .dark-mode select::placeholder {
+    color: #ffffff !important;
+}
+
+.dark-mode .form-control::placeholder {
+    color: #ffffff !important;
+}
+
+.dark-mode .text-muted {
+    color: #b0b0b0 !important;
+}
+
+.dark-mode .card h5, .dark-mode .card h3, .dark-mode .card h2 {
+    color: #e7e7e7 !important;
+}
+
+.dark-mode .small {
+    color: #b0b0b0 !important;
+    font-family: "Poppins", sans-serif !important;
 }
 
 /* ==================================================
@@ -199,21 +452,41 @@ body.dark-mode .nav-link.active { color: #66a2ff; }
 
 .table thead {
     background: #f8f9fa;
-    color: #000;
+    color: #000000 !important;
+}
+
+.table thead th {
+    color: #000000 !important;
+    font-weight: 600 !important;
 }
 
 .dark-mode .table thead {
-    background: #333;
-    color: #fff;
+    background: #f8f9fa;
+    color: #000000 !important;
+}
+
+.dark-mode .table thead th {
+    color: #000000 !important;
+    background: #f8f9fa !important;
+    font-weight: 600 !important;
 }
 
 .table tbody tr {
     background: #fff;
+    color: #000000 !important;
+}
+
+.table tbody tr td {
+    color: #000000 !important;
 }
 
 .dark-mode .table tbody tr {
     background: #2a2a2a;
-    color: #fff;
+    color: #000000 !important;
+}
+
+.dark-mode .table tbody tr td {
+    color: #000000 !important;
 }
 
 .table-striped > tbody > tr:nth-of-type(odd) {
@@ -266,8 +539,14 @@ body.dark-mode header h5 {
    WELCOME PAGE CONTENT
 ================================================== */
 .welcome-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    margin-top: 160px;
+    min-height: calc(100vh - 160px);
+    margin: 0 auto;
+    padding: 40px 20px;
     animation: fadeIn 1.5s ease forwards;
 }
 

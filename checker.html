@@ -35,60 +35,80 @@
   </nav>
 
   <!-- Main Content -->
-  <main class="container my-4" >
-    <h5>Submit a Health Check</h5>
+  <main class="container my-3">
     <div class="row g-3">
-      <div class="col-md-6">
-        <form id="checkerForm">
-          <div class="mb-2">
-            <label class="form-label">Full Name</label>
-            <input class="form-control" id="nameInput" required>
-          </div>
-          <div class="mb-2">
-            <label class="form-label">Age</label>
-            <input class="form-control" id="ageInput" type="number" required>
-          </div>
-          <div class="mb-2">
-            <label class="form-label">Gender</label>
-            <select class="form-control" id="genderInput" required>
-              <option>Male</option>
-              <option>Female</option>
-              <option>Other</option>
-            </select>
-          </div>
-          <div class="mb-2">
-            <label class="form-label">Address</label>
-            <input class="form-control" id="addressInput" required>
-          </div>
-          <div class="mb-2">
-            <label class="form-label">Temperature (°C)</label>
-            <input class="form-control" id="tempInput" type="number" step="0.1" required>
-          </div>
-          <div class="mb-2">
-            <label class="form-label">Symptoms</label>
-            <textarea id="symptomsInput" class="form-control" rows="3"></textarea>
-          </div>
-          <div class="mb-2">
-            <label class="form-label">Mood (1-5)</label>
-            <input id="moodInput" class="form-control" type="number" min="1" max="5" required>
-          </div>
-          <div class="mb-2">
-            <label class="form-label">Location (optional lat,lng)</label>
-            <input id="locInput" class="form-control" placeholder="14.6,120.98">
-          </div>
-          <button class="btn btn-primary">Submit</button>
-        </form>
+      <!-- Form Section -->
+      <div class="col-lg-5">
+        <div class="card p-4 card-bg">
+          <h5 class="mb-3">Health Check Form</h5>
+          <form id="checkerForm">
+            <div class="mb-3">
+              <label class="form-label small fw-5">Full Name</label>
+              <input class="form-control form-control-sm" id="nameInput" placeholder="Enter your name" required>
+            </div>
+            <div class="row g-2">
+              <div class="col-6">
+                  <label class="form-label small fw-5">Age</label>
+                  <input class="form-control form-control-sm" id="ageInput" type="number" min="0" max="120" step="1" placeholder="e.g., 25" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-5">Gender</label>
+                <select class="form-control form-control-sm" id="genderInput" required>
+                  <option value="">Select</option>
+                  <option>Male</option>
+                  <option>Female</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="mb-3 mt-3">
+              <label class="form-label small fw-5">Address</label>
+              <input class="form-control form-control-sm" id="addressInput" placeholder="Street, City" required>
+            </div>
+            <div class="row g-2">
+              <div class="col-6">
+                <label class="form-label small fw-5">Temp (°C)</label>
+                <input class="form-control form-control-sm" id="tempInput" type="number" step="0.1" placeholder="36.5" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-5">Mood (1-5)</label>
+                <input class="form-control form-control-sm" id="moodInput" type="number" min="1" max="5" placeholder="3" required>
+              </div>
+            </div>
+            <div class="mb-3 mt-3">
+              <label class="form-label small fw-5">Symptoms</label>
+              <textarea id="symptomsInput" class="form-control form-control-sm" rows="2" placeholder="e.g., cough, fever"></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-5">Location (optional)</label>
+              <input id="locInput" class="form-control form-control-sm" placeholder="Click map to auto-fill address">
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm w-100">Submit Health Check</button>
+          </form>
+        </div>
       </div>
 
-      <div class="col-md-6">
-        <h6>Pick a location on map</h6>
-        <div id="checkerMap" style="height:350px"></div>
-        <p class="small text-muted">Click on map to set location; it will fill the Location field.</p>
+      <!-- Map Section -->
+      <div class="col-lg-7">
+        <div class="card p-3 card-bg">
+          <h5 class="mb-2">Select Location on Map</h5>
+          <div id="checkerMap" style="height:450px; border-radius:8px;"></div>
+          <p class="small text-muted mt-2 mb-0">💡 Click on the map to set your location. It will auto-fill the location field.</p>
+        </div>
       </div>
     </div>
   </main>
 
+  <!-- Footer -->
+  <div class="footer-text">
+    © 2025 Community Health Check — SDG 3: Good Health and Well-Being
+  </div>
+
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <!-- Leaflet.markercluster -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.Default.css" />
+  <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
   <script src="app.js"></script>
 
   <!-- Dark Mode JS -->
